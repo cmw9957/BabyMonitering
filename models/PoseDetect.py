@@ -1,70 +1,83 @@
+#!/usr/bin/env python3
+#
+# Copyright (c) 2021, NVIDIA CORPORATION. All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+#
+
+import sys
 import argparse
-import time
-import cv2
-import logging
 
-from tf_pose.estimator import TfPoseEstimator
-from tf_pose.networks import get_graph_path, model_wh
+from jetson_inference import poseNet
+from jetson_utils import videoSource, videoOutput, logUsage
 
-cam = cv2.VideoCapture(0)
+def poseDetect(frameQueue) :
+    # parse the command line
+    parser = argparse.ArgumentParser(description="Run pose estimation DNN on a video/image stream.", 
+                                    formatter_class=argparse.RawTextHelpFormatter, 
+                                    epilog=poseNet.Usage() + videoSource.Usage() + videoOutput.Usage() + logUsage())
 
-logger = logging.getLogger('TfPoseEstimator-WebCam')
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
+    parser.add_argument("input_URI", type=str, default="", nargs='?', help="URI of the input stream")
+    parser.add_argument("output_URI", type=str, default="", nargs='?', help="URI of the output stream")
+    parser.add_argument("--network", type=str, default="resnet18-body", help="pre-trained model to load (see below for options)")
+    parser.add_argument("--overlay", type=str, default="links,keypoints", help="pose overlay flags (e.g. --overlay=links,keypoints)\nvalid combinations are:  'links', 'keypoints', 'boxes', 'none'")
+    parser.add_argument("--threshold", type=float, default=0.15, help="minimum detection threshold to use") 
 
-fps_time = 0
+    try:
+        opt = parser.parse_known_args()[0]
+    except:
+        print("")
+        parser.print_help()
+        sys.exit(0)
 
-def str2bool(v):
-    return v.lower() in ("yes", "true", "t", "1")
+    # load the pose estimation model
+    net = poseNet(opt.network, sys.argv, opt.threshold)
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--camera', type=int, default=0)
+    # create video sources & outputs
+    input = videoSource(opt.input_URI, argv=sys.argv)
+    output = videoOutput(opt.output_URI, argv=sys.argv)
 
-parser.add_argument('--resize', type=str, default='0x0',
-                    help='if provided, resize images before they are processed. default=0x0, Recommends : 432x368 or 656x368 or 1312x736 ')
-parser.add_argument('--resize-out-ratio', type=float, default=4.0,
-                    help='if provided, resize heatmaps before they are post-processed. default=1.0')
+    # process frames until the user exits
+    while True:
+        # capture the next image
+        img = input.Capture()
 
-parser.add_argument('--model', type=str, default='mobilenet_thin',
-                    help='cmu / mobilenet_thin / mobilenet_v2_large / mobilenet_v2_small')
-parser.add_argument('--show-process', type=bool, default=False,
-                    help='for debug purpose, if enabled, speed for inference is dropped.')
+        # perform pose estimation (with overlay)
+        poses = net.Process(img, overlay=opt.overlay)
 
-parser.add_argument('--tensorrt', type=str, default="False",
-                    help='for tensorrt process.')
+        # print the pose results
+        print("detected {:d} objects in image".format(len(poses)))
 
+        for pose in poses:
+            print(pose)
+            print(pose.Keypoints)
+            print('Links', pose.Links)
 
-args = parser.parse_args()
+        # render the image
+        output.Render(img)
 
-logger.debug('initialization %s : %s' % (args.model, get_graph_path(args.model)))
-w, h = model_wh(args.resize)
-if w > 0 and h > 0:
-    e = TfPoseEstimator(get_graph_path(args.model), target_size=(w, h), trt_bool=str2bool(args.tensorrt))
-else:
-    e = TfPoseEstimator(get_graph_path(args.model), target_size=(432, 368), trt_bool=str2bool(args.tensorrt))
+        # update the title bar
+        output.SetStatus("{:s} | Network {:.0f} FPS".format(opt.network, net.GetNetworkFPS()))
 
-logger.debug('cam read+')
-ret_val, image = cam.read()
-logger.info('cam image=%dx%d' % (image.shape[1], image.shape[0]))
+        # print out performance info
+        net.PrintProfilerTimes()
 
-while True :
-    logger.debug('image process+')
-    humans = e.inference(image, resize_to_default=(w > 0 and h > 0), upsample_size=args.resize_out_ratio)
-    
-    logger.debug('postprocess+')
-    image = TfPoseEstimator.draw_humans(image, humans, imgcopy=False)
-
-    logger.debug('show+')
-    cv2.putText(image,
-                "FPS: %f" % (1.0 / (time.time() - fps_time)),
-                (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                (0, 255, 0), 2)
-    cv2.imshow('tf-pose-estimation', image)
-    fps_time = time.time()
-    if cv2.waitKey(1) == 27:
-         break
-    logger.debug('finished+')
+        # exit on input/output EOS
+        if not input.IsStreaming() or not output.IsStreaming():
+            break

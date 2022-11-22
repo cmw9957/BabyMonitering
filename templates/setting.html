@@ -8,29 +8,31 @@
         background-size: cover;
       }
     </style>
-  </head>
-  
-  <body>
     <div style="text-align: center">
-      <h1><a href="/">Baby Monitering</a></h1>
+      <h1><a href="/">Baby Monitoring</a></h1>
     </div>
-    <div style="list-style: none;position: absolute; left: 650px">
+  </head>
+
+  <body>
+    <div style="list-style: none;">
       <form action="/setting_post" method="post">
-        알림 항목 선택
+        <div style="background-color: white; padding:8px;border : 2px solid black;">
+          Setting
+          <p style="border : 2px solid black;">
+            <input type="checkbox" name="PoseEstimation" />
+            Face cover, Blanket Remove Alert
+          </p>
+          <p style="border : 2px solid black">
+            <input type="checkbox" name="FrequentlyMove" />
+            Frequently Move Alert
+          </p>
+          <p style="border : 2px solid black">
+            <input type="checkbox" name="BlinkDetection" />
+            Awake Alert
+          </p>
+        </div>
         <p>
-          <input type="checkbox" name="PoseEstimation" />
-          Face cover, Blanket Remove Alert
-        </p>
-        <p>
-          <input type="checkbox" name="FrequentlyMove" />
-          Frequently Move Alert
-        </p>
-        <p>
-          <input type="checkbox" name="BlinkDetection" />
-          Awake Alert
-        </p>
-        <p>
-          <input type="submit" value="submit" />
+          <input type="submit" value="submit" style="width: 240pt; height: 25pt;"/>
         </p>
       </form>
     </div>
