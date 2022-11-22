@@ -8,28 +8,41 @@
         background-size: cover;
       }
     </style>
+    <div style="text-align: center">
+      <h1><a href="/">Baby Monitoring</a></h1>
+    </div>
   </head>
 
   <body>
-    <div style="text-align: center">
-      <h1><a href="/">Baby Monitering</a></h1>
-
-      <div style="list-style: none; top: 500px">
+    <div style="text-align: center; list-style: none; margin-top: 300px">
+      <p>
+        <button
+          type="button"
+          style="width: 130pt; height: 25pt"
+          onclick="location.href='/stream_page';"
+        >
+          Monitoring
+        </button>
+      </p>
+      <p>
+        <button
+          type="button"
+          style="width: 130pt; height: 25pt"
+          onclick="location.href='/setting';"
+        >
+          Setting
+        </button>
+      </p>
+      <form action="/camera_post" method="post">
         <p>
-          실시간 모니터링
-          <li><a href="/stream_page">Monitering</a></li>
+          <button name="CameraOn" style="height: 25pt" value="on">
+            Camera On
+          </button>
+          <button name="CameraOff" style="height: 25pt" value="off">
+            Camera Off
+          </button>
         </p>
-        <p>
-          설정
-          <li><a href="/setting">Setting</a></li>
-        </p>
-        <form action="/camera_post" method="post">
-          <p>
-            <button name="CameraOn" value="on">Camera On</button>
-            <button name="CameraOff" value="off">Camera Off</button>
-          </p>
-        </form>
-      </div>
+      </form>
     </div>
   </body>
 </html>
