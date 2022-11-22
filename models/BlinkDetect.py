@@ -142,10 +142,10 @@ def blinkDetect(frameQueue) :
 				cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 	
 		# ======================================TEST SHOW======================================
-		# show the frame
-		cv2.imshow("Blink Detect", frame)
-		key = cv2.waitKey(1) & 0xFF
+		# # show the frame
+		# cv2.imshow("Blink Detect", frame)
+		# key = cv2.waitKey(1) & 0xFF
 	
-		# if the `q` key was pressed, break from the loop
-		if key == ord("q"):
-			break
+		# # if the `q` key was pressed, break from the loop
+		# if key == ord("q"):
+		# 	break
