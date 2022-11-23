@@ -1,22 +1,45 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <style>
+    <style type="text/css">
       body {
         background-image: url("https://i.pinimg.com/originals/2d/f0/57/2df057aee9050bc91a8be6ea79827bf5.jpg");
         background-repeat: no-repeat;
         background-size: cover;
       }
+      a {
+        text-decoration: none;
+        color: rgb(197, 192, 192);
+      }
+      a:visited {
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: none;
+      }
+      a:focus {
+        text-decoration: none;
+      }
+      a:hover,
+      a:active {
+        text-decoration: none;
+      }
+
+      .inner-div {
+        width : 300px;
+        height : 150px;
+        margin: auto;
+      }
     </style>
     <div style="text-align: center">
-      <h1><a href="/">Baby Monitoring</a></h1>
+      <h1><a href="/"><i>Baby Monitoring</i></a></h1>
     </div>
   </head>
 
   <body>
-    <div style="list-style: none;">
+    <div style="list-style: none; margin-top: 150px;">
       <form action="/setting_post" method="post">
-        <div style="background-color: white; padding:8px;border : 2px solid black;">
+        <div style="background-color: white; padding:8px;border : 2px solid black;" class="inner-div">
           Setting
           <p style="border : 2px solid black;">
             <input type="checkbox" name="PoseEstimation" />
@@ -30,10 +53,10 @@
             <input type="checkbox" name="BlinkDetection" />
             Awake Alert
           </p>
+          <p>
+            <input type="submit" value="submit" style="width: 300px; height:25px"/>
+          </p>
         </div>
-        <p>
-          <input type="submit" value="submit" style="width: 240pt; height: 25pt;"/>
-        </p>
       </form>
     </div>
   </div>
