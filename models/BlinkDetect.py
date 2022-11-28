@@ -4,9 +4,7 @@ from imutils import face_utils
 from fcm import sendMessage
 
 import imutils
-import dlib
 import cv2
-import time
 
 # define two constants, one for the eye aspect ratio to indicate
 # blink and then a second constant for the number of consecutive
