@@ -12,11 +12,8 @@ def sendMessage(body, title):
         "title": title
     }
  
-    # topic을 이용해 다수의 구독자에게 푸시알림을 전송함
-    # 버전에 따라 사용 방법이 다를 수 있으니 공식문서 확인 필수
+    # topic을 이용해 다수의 구독자에게 푸시알림을 전송
     result = push_service.notify_topic_subscribers(topic_name="monitoring", data_message=data_message)
  
     # 전송 결과 출력
     print(result)
- 
-# sendMessage("monitoring", "hello world")

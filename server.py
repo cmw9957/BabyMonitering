@@ -2,14 +2,18 @@ from flask import Flask, render_template
 from flask import request
 from flask import Response
 from flask import stream_with_context
-import queue
 from multiprocessing import Queue
 
 import cv2
+import dlib
+import queue
 import imutils
 import platform
 import numpy as np
 
+# AI models
+from models.BlinkDetect import blinkDetect
+from models.posenet import poseDetect
 from threading import Thread
 
 # ====================전역 변수 선언====================
@@ -23,12 +27,20 @@ Q = queue.Queue(maxsize=128)
 cameraOn = False
 videoFrame = None # <========== global video frame
 
+# ===================Blink Variable ===================
+COUNTER = 0
+TOTAL = 0
+delayCount = None
+detector = dlib.get_frontal_face_detector()
+predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
+
 poseEstimationChecked = False
 frequentlyMoveChecked = False
 blinkDetectionChecked = False
 
 motionFrameQueue = Queue(maxsize=128)
-blinkFrameQueue = Queue(maxsize=128)
+# blinkFrameQueue = Queue(maxsize=128)
+# poseFrameQueue = Queue(maxsize=128)
 
 # main page
 @app.route('/')
@@ -139,6 +151,9 @@ def stopCam() :
 # 영상 데이터를 실시간으로 Queue에 update하는 Thread 내용, 전역변수 cameraOn이 False면
 # 빈 while문 진행
 def updateVideoFrame() :
+    global COUNTER
+    global TOTAL
+
     while True :
         if cameraOn :
             (ret, frame) = capture.read()
@@ -147,8 +162,15 @@ def updateVideoFrame() :
                 Q.put(frame)
                 if frequentlyMoveChecked and cameraOn :
                     motionFrameQueue.put(frame)
+                
                 if blinkDetectionChecked and cameraOn :
-                    blinkFrameQueue.put(frame)
+                    blinkDetect(frame)
+                else :
+                    COUNTER = 0
+                    TOTAL = 0
+                
+                if poseEstimationChecked and cameraOn :
+                    poseDetect(frame)
 
 # 영상 데이터를 실시간으로 Queue에서 read하는 Thread 내용, 전역변수 cameraOn이 False면
 # 빈 while문 진행

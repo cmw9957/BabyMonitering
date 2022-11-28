@@ -7,7 +7,7 @@ from collections import deque
 from fcm import sendMessage
 
 def motionDetect(frameQueue) :
-    print('====================Motion Detect Process====================')
+    print('====================Motion Detect Process Start====================')
     # =============================================================================
     # USER-SET PARAMETERS
     # =============================================================================
@@ -125,10 +125,11 @@ def motionDetect(frameQueue) :
         # Convert the frame_delta to color for splicing
         frame_delta = cv2.cvtColor(frame_delta, cv2.COLOR_GRAY2BGR)
 
-        # Splice the two video frames together to make one long horizontal one
+        # ======================================TEST SHOW======================================
+        # # Splice the two video frames together to make one long horizontal one
         # cv2.imshow("frame", np.hstack((frame_delta, frame)))
 
-        # Interrupt trigger by pressing q to quit the open CV program
+        # # Interrupt trigger by pressing q to quit the open CV program
         # ch = cv2.waitKey(1)
         # if ch & 0xFF == ord('q'):
         #     break
