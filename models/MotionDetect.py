@@ -7,7 +7,7 @@ from collections import deque
 from fcm import sendMessage
 
 def motionDetect(frameQueue) :
-    print('====================Motion Detect Process====================')
+    print('====================Motion Detect Process Start====================')
     # =============================================================================
     # USER-SET PARAMETERS
     # =============================================================================
