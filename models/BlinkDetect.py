@@ -2,7 +2,6 @@
 from scipy.spatial import distance as dist
 from imutils import face_utils
 from fcm import sendMessage
-from server import detector, predictor
 
 import imutils
 import dlib
@@ -32,7 +31,7 @@ def eyeAspectRatio(eye):
 	return ear
 
 def blinkDetect(frame) :
-	from server import COUNTER, TOTAL
+	from server import COUNTER, TOTAL, detector, predictor
 	
 	print('====================Blink Detect Process====================')
 	# # construct the argument parse and parse the arguments

@@ -30,10 +30,9 @@ videoFrame = None # <========== global video frame
 # ===================Blink Variable ===================
 COUNTER = 0
 TOTAL = 0
-delayCount = None
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
-
+# =====================================================
 poseEstimationChecked = False
 frequentlyMoveChecked = False
 blinkDetectionChecked = False
