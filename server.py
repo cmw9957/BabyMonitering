@@ -13,7 +13,7 @@ import numpy as np
 
 # AI models
 from models.BlinkDetect import blinkDetect
-from models.posenet import poseDetect
+# from models.posenet import poseDetect
 from threading import Thread
 
 # ====================전역 변수 선언====================
@@ -169,7 +169,8 @@ def updateVideoFrame() :
                     TOTAL = 0
                 
                 if poseEstimationChecked and cameraOn :
-                    poseDetect(frame)
+                    pass
+                    # poseDetect(frame)
 
 # 영상 데이터를 실시간으로 Queue에서 read하는 Thread 내용, 전역변수 cameraOn이 False면
 # 빈 while문 진행
