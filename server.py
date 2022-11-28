@@ -21,8 +21,8 @@ app = Flask(__name__)
 capture = None
 updateThread = None
 readThread = None
-width = 640
-height = 480
+width = 320
+height = 240
 Q = queue.Queue(maxsize=128)
 cameraOn = False
 videoFrame = None # <========== global video frame
