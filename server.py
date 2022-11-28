@@ -3,7 +3,7 @@ from flask import request
 from flask import Response
 from flask import stream_with_context
 import queue
-from multiprocessing import Pipe, Queue
+from multiprocessing import Queue
 
 import cv2
 import imutils
