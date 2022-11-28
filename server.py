@@ -44,8 +44,14 @@ motionFrameQueue = Queue(maxsize=128)
 # main page
 @app.route('/')
 def index():
+    global poseEstimationChecked
+    global frequentlyMoveChecked
+    global blinkDetectionChecked
     # print('Camera status : ', cameraOn)
-    return render_template('index.html')
+    return render_template('index.html', 
+                            FaceCoverBlanketRemoveState=poseEstimationChecked, 
+                            FrequentlyMoveState=frequentlyMoveChecked, 
+                            AwakeState=blinkDetectionChecked)
 
 # streaming page
 @app.route('/stream_page')
@@ -69,7 +75,10 @@ def settingPost() :
         frequentlyMoveChecked = str(request.form.get('FrequentlyMove')) == 'on'
         blinkDetectionChecked = str(request.form.get('BlinkDetection')) == 'on'
         print('MODE : ', poseEstimationChecked, frequentlyMoveChecked, blinkDetectionChecked)
-    return render_template('index.html')
+    return render_template('index.html', 
+                            FaceCoverBlanketRemoveState=poseEstimationChecked, 
+                            FrequentlyMoveState=frequentlyMoveChecked, 
+                            AwakeState=blinkDetectionChecked)
 
 # camera post function
 @app.route('/camera_post', methods=['POST'])
@@ -78,7 +87,7 @@ def camerapost() :
         on = str(request.form.get('CameraOn')) == 'on'
         off = str(request.form.get('CameraOff')) == 'off'
     if on and not cameraOn :
-        print('========================================Camera ON========================================')
+        print('========================================Camera ON=========================================')
         runCam(0)
     elif off and cameraOn :
         print('========================================Camera OFF========================================')
