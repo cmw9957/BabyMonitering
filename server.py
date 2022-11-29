@@ -44,9 +44,6 @@ motionFrameQueue = Queue(maxsize=128)
 # main page
 @app.route('/')
 def index():
-    global poseEstimationChecked
-    global frequentlyMoveChecked
-    global blinkDetectionChecked
     # print('Camera status : ', cameraOn)
     return render_template('index.html', 
                             FaceCoverBlanketRemoveState='ON' if poseEstimationChecked else 'OFF', 
@@ -56,7 +53,10 @@ def index():
 # streaming page
 @app.route('/stream_page')
 def stream_page():
-    return render_template('stream.html')
+    return render_template('stream.html', 
+                            FaceCoverBlanketRemoveState='ON' if poseEstimationChecked else 'OFF', 
+                            FrequentlyMoveState='ON' if frequentlyMoveChecked else 'OFF', 
+                            AwakeState='ON' if blinkDetectionChecked else 'OFF')
 
 # setting page
 @app.route('/setting')
@@ -92,7 +92,10 @@ def camerapost() :
     elif off and cameraOn :
         print('========================================Camera OFF========================================')
         stopCam()
-    return render_template('index.html')
+    return render_template('index.html', 
+                            FaceCoverBlanketRemoveState='ON' if poseEstimationChecked else 'OFF', 
+                            FrequentlyMoveState='ON' if frequentlyMoveChecked else 'OFF', 
+                            AwakeState='ON' if blinkDetectionChecked else 'OFF')
 
 # stream function
 @app.route('/stream')

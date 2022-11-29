@@ -18,7 +18,7 @@
   </head>
 
   <body>
-    <div style="text-align: center; margin-top: 210px;">
+    <div style="text-align: center; margin-top: 261px;">
       <span id="clock" style="color:gray; font-size: 50px;">clock</span>
       <span id="apm" style="color:gray; font-size: 25px;"  >ampm</span>
     </div>
@@ -29,7 +29,7 @@
           style="width: 130pt; height: 25pt; border-radius: 10px; border: none;"
           onclick="location.href='/stream_page';"
         >
-          Monitoring
+          <b>Monitoring</b>
         </button>
       </p>
       <p>
@@ -38,21 +38,21 @@
           style="width: 130pt; height: 25pt; border-radius: 10px;border: none;"
           onclick="location.href='/setting';"
         >
-          Setting
+          <b>Setting</b>
         </button>
       </p>
       <form action="/camera_post" method="post">
         <p>
           <button name="CameraOn" style="height: 25pt; border-radius: 10px;border: none;" value="on">
-            Camera On
+            <b>Camera On</b>
           </button>
           <button name="CameraOff" style="height: 25pt; border-radius: 10px;border: none;" value="off">
-            Camera Off
+            <b>Camera Off</b>
           </button>
         </p>
       </form>
     </div>
-    <ul style="list-style: none; font-size: 0.5em; color: white; margin-right: 40px; margin-top: 100px;">
+    <ul style="list-style: none; font-size: 0.5em; color: white; margin-right: 40px; margin-top: 70px;">
       <li>Face cover, Blanket Remove Alert Mode : {{FaceCoverBlanketRemoveState}}</li>
       <li>Frequently Move Alert Mode : {{FrequentlyMoveState}}</li>
       <li>Awake Alert Mode : {{AwakeState}}</li>

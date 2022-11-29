@@ -17,18 +17,42 @@
     </div>
   </head>
   <body>
-    <script>
-      function addList() {
-        // createElement를 통해 plusUl 변수에 생성할 element 담는다.
-        var plusUl = document.createElement("ul");
-        // 추가할 plusUl element 내용 설정
-        plusUl.innerHTML = "<li>state 내용</li>";
-        document.getElementById("state").appendChild(plusUl);
-      }
-    </script>
     <div style="text-align: center">
       <img src="{{url_for('stream')}}" />
     </div>
-    <ul id="state"></ul>
+    <span>
+      <div style="text-align: center;">
+        <span id="clock" style="color:gray; font-size: 50px;">clock</span>
+        <span id="apm" style="color:gray; font-size: 25px;"  >ampm</span>
+      </div>
+      <ul style="list-style: none; font-size: 0.5em; color: white; margin-right: 40px; margin-top: 245px;">
+        <li>Face cover, Blanket Remove Alert Mode : {{FaceCoverBlanketRemoveState}}</li>
+        <li>Frequently Move Alert Mode : {{FrequentlyMoveState}}</li>
+        <li>Awake Alert Mode : {{AwakeState}}</li>
+      </ul>
+    </span>
+    <script>
+      var Target = document.getElementById("clock");
+      var Target_apm = document.getElementById("apm");
+      function clock() {
+          var time = new Date();
+          var hours = time.getHours();
+          var minutes = time.getMinutes();
+          var seconds = time.getSeconds();
+          var AmPm ="AM";
+          if(hours > 12){   
+              var AmPm ="PM";
+              hours %= 12;
+          }
+
+          Target.innerText = 
+          `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+
+          Target_apm.innerText = `${AmPm}`;
+
+      }
+      clock();
+      setInterval(clock, 1000); // 1초마다 실행
+    </script>
   </body>
 </html>
