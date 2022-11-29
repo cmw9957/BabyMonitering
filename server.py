@@ -49,9 +49,9 @@ def index():
     global blinkDetectionChecked
     # print('Camera status : ', cameraOn)
     return render_template('index.html', 
-                            FaceCoverBlanketRemoveState=poseEstimationChecked, 
-                            FrequentlyMoveState=frequentlyMoveChecked, 
-                            AwakeState=blinkDetectionChecked)
+                            FaceCoverBlanketRemoveState='ON' if poseEstimationChecked else 'OFF', 
+                            FrequentlyMoveState='ON' if frequentlyMoveChecked else 'OFF', 
+                            AwakeState='ON' if blinkDetectionChecked else 'OFF')
 
 # streaming page
 @app.route('/stream_page')
@@ -76,9 +76,9 @@ def settingPost() :
         blinkDetectionChecked = str(request.form.get('BlinkDetection')) == 'on'
         print('MODE : ', poseEstimationChecked, frequentlyMoveChecked, blinkDetectionChecked)
     return render_template('index.html', 
-                            FaceCoverBlanketRemoveState=poseEstimationChecked, 
-                            FrequentlyMoveState=frequentlyMoveChecked, 
-                            AwakeState=blinkDetectionChecked)
+                            FaceCoverBlanketRemoveState='ON' if poseEstimationChecked else 'OFF', 
+                            FrequentlyMoveState='ON' if frequentlyMoveChecked else 'OFF', 
+                            AwakeState='ON' if blinkDetectionChecked else 'OFF')
 
 # camera post function
 @app.route('/camera_post', methods=['POST'])
