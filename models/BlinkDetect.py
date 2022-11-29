@@ -30,8 +30,6 @@ def eyeAspectRatio(eye):
 
 def blinkDetect(frame) :
 	from server import COUNTER, TOTAL, detector, predictor
-	
-	print('====================Blink Detect Process====================')
 	# # construct the argument parse and parse the arguments
 	# ap = argparse.ArgumentParser()
 	# ap.add_argument("-p", "--shape-predictor", required=True,

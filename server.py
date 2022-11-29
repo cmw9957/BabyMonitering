@@ -13,7 +13,7 @@ import numpy as np
 
 # AI models
 from models.BlinkDetect import blinkDetect
-from models.posenet import poseDetect
+# from models.posenet import poseDetect
 from threading import Thread
 
 # ====================전역 변수 선언====================
