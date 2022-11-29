@@ -8,60 +8,77 @@
         background-size: cover;
       }
       a {
-        text-decoration: none;
-        color: rgb(197, 192, 192);
-      }
-      a:visited {
-        text-decoration: none;
-      }
-      a:hover {
-        text-decoration: none;
-      }
-      a:focus {
-        text-decoration: none;
-      }
-      a:hover,
-      a:active {
-        text-decoration: none;
+        text-decoration-line: none;
+        color: rgb(255, 255, 255);
       }
     </style>
     <div style="text-align: center">
-      <h1>
-        <a href="/"><i>Baby Monitoring</i></a>
-      </h1>
+      <h1><i><a href="/">Honey Monitoring</a></h1></i>
     </div>
   </head>
 
   <body>
-    <div style="text-align: center; list-style: none; margin-top: 300px">
+    <div style="text-align: center; margin-top: 261px;">
+      <span id="clock" style="color:gray; font-size: 50px;">clock</span>
+      <span id="apm" style="color:gray; font-size: 25px;"  >ampm</span>
+    </div>
+    <div style="text-align: center; list-style: none; margin-top: 40px">
       <p>
         <button
           type="button"
-          style="width: 130pt; height: 25pt"
+          style="width: 130pt; height: 25pt; border-radius: 10px; border: none;"
           onclick="location.href='/stream_page';"
         >
-          Monitoring
+          <b>Monitoring</b>
         </button>
       </p>
       <p>
         <button
           type="button"
-          style="width: 130pt; height: 25pt"
+          style="width: 130pt; height: 25pt; border-radius: 10px;border: none;"
           onclick="location.href='/setting';"
         >
-          Setting
+          <b>Setting</b>
         </button>
       </p>
       <form action="/camera_post" method="post">
         <p>
-          <button name="CameraOn" style="height: 25pt" value="on">
-            Camera On
+          <button name="CameraOn" style="height: 25pt; border-radius: 10px;border: none;" value="on">
+            <b>Camera On</b>
           </button>
-          <button name="CameraOff" style="height: 25pt" value="off">
-            Camera Off
+          <button name="CameraOff" style="height: 25pt; border-radius: 10px;border: none;" value="off">
+            <b>Camera Off</b>
           </button>
         </p>
       </form>
     </div>
+    <ul style="list-style: none; font-size: 0.5em; color: white; margin-right: 40px; margin-top: 70px;">
+      <li>Face cover, Blanket Remove Alert Mode : {{FaceCoverBlanketRemoveState}}</li>
+      <li>Frequently Move Alert Mode : {{FrequentlyMoveState}}</li>
+      <li>Awake Alert Mode : {{AwakeState}}</li>
+    </ul>
+    <script>
+      var Target = document.getElementById("clock");
+      var Target_apm = document.getElementById("apm");
+      function clock() {
+          var time = new Date();
+          var hours = time.getHours();
+          var minutes = time.getMinutes();
+          var seconds = time.getSeconds();
+          var AmPm ="AM";
+          if(hours > 12){   
+              var AmPm ="PM";
+              hours %= 12;
+          }
+
+          Target.innerText = 
+          `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+
+          Target_apm.innerText = `${AmPm}`;
+
+      }
+      clock();
+      setInterval(clock, 1000); // 1초마다 실행
+    </script>
   </body>
 </html>
