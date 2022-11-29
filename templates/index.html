@@ -13,7 +13,7 @@
       }
     </style>
     <div style="text-align: center">
-      <h1><i><a href="/">Baby Monitoring</a></h1></i>
+      <h1><i><a href="/">Honey Monitoring</a></h1></i>
     </div>
   </head>
 
@@ -22,7 +22,7 @@
       <p>
         <button
           type="button"
-          style="width: 130pt; height: 25pt"
+          style="width: 130pt; height: 25pt; border-radius: 10px; border: none;"
           onclick="location.href='/stream_page';"
         >
           Monitoring
@@ -31,7 +31,7 @@
       <p>
         <button
           type="button"
-          style="width: 130pt; height: 25pt"
+          style="width: 130pt; height: 25pt; border-radius: 10px;border: none;"
           onclick="location.href='/setting';"
         >
           Setting
@@ -39,19 +39,19 @@
       </p>
       <form action="/camera_post" method="post">
         <p>
-          <button name="CameraOn" style="height: 25pt" value="on">
+          <button name="CameraOn" style="height: 25pt; border-radius: 10px;border: none;" value="on">
             Camera On
           </button>
-          <button name="CameraOff" style="height: 25pt" value="off">
+          <button name="CameraOff" style="height: 25pt; border-radius: 10px;border: none;" value="off">
             Camera Off
           </button>
         </p>
       </form>
-      <ul style="list-style: none">
-        <li>Face cover, Blanket Remove Alert Mode : {{FaceCoverBlanketRemoveState}}</li>
-        <li>Frequently Move Alert Mode : {{FrequentlyMoveState}}</li>
-        <li>Awake Alert Mode : {{AwakeState}}</li>
-      </ul>
     </div>
+    <ul style="list-style: none; font-size: 0.5em; color: white; margin-right: 40px; margin-top: 100px;">
+      <li>Face cover, Blanket Remove Alert Mode : {{FaceCoverBlanketRemoveState}}</li>
+      <li>Frequently Move Alert Mode : {{FrequentlyMoveState}}</li>
+      <li>Awake Alert Mode : {{AwakeState}}</li>
+    </ul>
   </body>
 </html>
