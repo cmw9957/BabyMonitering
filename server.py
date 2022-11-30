@@ -29,7 +29,8 @@ cameraOn = False
 videoFrame = None # <========== global video frame
 
 blinkStartTime = None
-poseStartTime = None
+poseFaceCoverStartTime = None
+poseBlanketRemoveStartTime = None
 # ===================Blink Variable ===================
 COUNTER = 0
 TOTAL = 0
@@ -70,6 +71,9 @@ def settingPost() :
     global poseEstimationChecked
     global frequentlyMoveChecked
     global blinkDetectionChecked
+    global poseFaceCoverStartTime
+    global poseBlanketRemoveStartTime
+    global blinkStartTime
     
     if request.method == 'POST' :
         poseEstimationChecked = str(request.form.get('PoseEstimation')) == 'on'
@@ -78,7 +82,8 @@ def settingPost() :
         print('MODE : ', poseEstimationChecked, frequentlyMoveChecked, blinkDetectionChecked)
     
     if poseEstimationChecked :
-        poseStartTime = time()
+        poseFaceCoverStartTime = time()
+        poseBlanketRemoveStartTime = time()
     if blinkDetectionChecked :
         blinkStartTime = time()
 

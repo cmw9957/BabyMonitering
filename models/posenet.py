@@ -24,8 +24,12 @@
 import sys
 import argparse
 import cv2
+import time
+
 from jetson_inference import poseNet
 from jetson_utils import videoSource, videoOutput, logUsage, cudaFromNumpy, cudaAllocMapped, cudaConvertColor, cudaDeviceSynchronize
+from server import poseFaceCoverStartTime, poseBlanketRemoveStartTime
+from fcm import sendMessage
 
 net = poseNet("densenet121-body", sys.argv, 0.1)
 output = videoOutput("", argv=sys.argv)
@@ -54,9 +58,15 @@ def poseDetect(frame):
             keyset.add(keypoint.ID)
         if 0 not in keyset:
             print("baby sleep on stomach!!!!!\n\n\n\n")
+            poseEndTime = time()
+            if (poseEndTime - poseFaceCoverStartTime) >= 30 :
+                sendMessage('Face Cover Detected', 'Baby is sleep on stomach now.')
         if 11 in keyset or 11 in keyset or 12 in keyset or 13 in keyset or\
             14 in  keyset or 15 in keyset or 16 in keyset:
             print("blanket is removed\n\n\n")
+            if (poseEndTime - poseBlanketRemoveStartTime) >= 30 :
+                sendMessage('Blanket Remove Detected', 'Blanket is removed now.')
+
 
     # render the image
     output.Render(rgb_img)
