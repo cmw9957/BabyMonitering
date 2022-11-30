@@ -6,6 +6,7 @@ from multiprocessing import Queue
 
 import cv2
 import dlib
+import time
 import queue
 import imutils
 import platform
@@ -27,6 +28,8 @@ Q = queue.Queue(maxsize=128)
 cameraOn = False
 videoFrame = None # <========== global video frame
 
+blinkStartTime = None
+poseStartTime = None
 # ===================Blink Variable ===================
 COUNTER = 0
 TOTAL = 0
@@ -73,6 +76,12 @@ def settingPost() :
         frequentlyMoveChecked = str(request.form.get('FrequentlyMove')) == 'on'
         blinkDetectionChecked = str(request.form.get('BlinkDetection')) == 'on'
         print('MODE : ', poseEstimationChecked, frequentlyMoveChecked, blinkDetectionChecked)
+    
+    if poseEstimationChecked :
+        poseStartTime = time()
+    if blinkDetectionChecked :
+        blinkStartTime = time()
+
     return render_template('index.html', 
                             FaceCoverBlanketRemoveState='ON' if poseEstimationChecked else 'OFF', 
                             FrequentlyMoveState='ON' if frequentlyMoveChecked else 'OFF', 

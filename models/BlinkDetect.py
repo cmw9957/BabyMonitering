@@ -30,8 +30,6 @@ def eyeAspectRatio(eye):
 
 def blinkDetect(frame) :
 	from server import COUNTER, TOTAL, detector, predictor
-	
-	print('====================Blink Detect Process====================')
 	# # construct the argument parse and parse the arguments
 	# ap = argparse.ArgumentParser()
 	# ap.add_argument("-p", "--shape-predictor", required=True,
@@ -127,14 +125,14 @@ def blinkDetect(frame) :
 		if TOTAL >= 10 :
 			TOTAL = 0
 			print('Awake!')
-			sendMessage('Awake Detected', 'Awake Awake Awake')
+			sendMessage('Awake Detected', 'Baby us awake now.')
 
-		# draw the total number of blinks on the frame along with
-		# the computed eye aspect ratio for the frame
-		cv2.putText(frame, "Blinks: {}".format(TOTAL), (10, 30),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-		cv2.putText(frame, "EAR: {:.2f}".format(ear), (300, 30),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+		# # draw the total number of blinks on the frame along with
+		# # the computed eye aspect ratio for the frame
+		# cv2.putText(frame, "Blinks: {}".format(TOTAL), (10, 30),
+		# 	cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+		# cv2.putText(frame, "EAR: {:.2f}".format(ear), (300, 30),
+		# 	cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
 	# show the frame
 	# cv2.imshow("Blink Detect", frame)
