@@ -2,9 +2,11 @@
 from scipy.spatial import distance as dist
 from imutils import face_utils
 from fcm import sendMessage
+from server import blinkStartTime
 
 import imutils
 import cv2
+import time
 
 # define two constants, one for the eye aspect ratio to indicate
 # blink and then a second constant for the number of consecutive
@@ -122,10 +124,13 @@ def blinkDetect(frame) :
 			# reset the eye frame counter
 			COUNTER = 0
 		
-		if TOTAL >= 10 :
+		if TOTAL >= 5 :
+			print('Awake Detect')
 			TOTAL = 0
-			print('Awake!')
-			sendMessage('Awake Detected', 'Baby us awake now.')
+			blinkEndTime = time()
+			if (blinkEndTime - blinkStartTime) >= 30 :
+				blinkStartTime = time()
+				sendMessage('Awake Detected', 'Baby is awake now.')
 
 		# # draw the total number of blinks on the frame along with
 		# # the computed eye aspect ratio for the frame
