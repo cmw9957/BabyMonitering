@@ -112,7 +112,7 @@ def motionDetect(frameQueue) :
             text = "Frequently Movement Detected"
             if not messageCheck :
                 messageCheck = True
-                sendMessage('Frequently Moving Detected', 'Moving Moving Moving')
+                sendMessage('Frequently Moving Detected', 'Baby is moving now.')
         else:
             messageCheck = False
             text = "No Movement Detected"
