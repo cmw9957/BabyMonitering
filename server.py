@@ -51,6 +51,17 @@ def stream_page():
                             FrequentlyMoveState='ON' if frequentlyMoveChecked else 'OFF', 
                             AwakeState='ON' if blinkDetectionChecked else 'OFF')
 
+# stream function
+@app.route('/stream')
+def stream() :
+    try :
+        return Response(
+                            stream_with_context(stream_gen()),
+                            mimetype='multipart/x-mixed-replace; boundary=frame'
+        )
+    except Exception as e :
+        print('[Honey]', 'stream error : ', str(e))
+
 # setting page
 @app.route('/setting')
 def setting():
@@ -90,17 +101,6 @@ def camerapost() :
                             FaceCoverBlanketRemoveState='ON' if poseEstimationChecked else 'OFF', 
                             FrequentlyMoveState='ON' if frequentlyMoveChecked else 'OFF', 
                             AwakeState='ON' if blinkDetectionChecked else 'OFF')
-
-# stream function
-@app.route('/stream')
-def stream() :
-    try :
-        return Response(
-                            stream_with_context(stream_gen()),
-                            mimetype='multipart/x-mixed-replace; boundary=frame'
-        )
-    except Exception as e :
-        print('[Honey]', 'stream error : ', str(e))
 
 # ===========================================================================================================================
 # ====================================================== Function Area ======================================================
