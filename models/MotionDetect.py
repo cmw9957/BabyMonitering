@@ -7,7 +7,7 @@ from collections import deque
 from fcm import sendMessage
 
 def motionDetect(frameQueue) :
-    print('====================Motion Detect Process Start====================')
+    # print('====================Motion Detect Process Start====================')
     # =============================================================================
     # USER-SET PARAMETERS
     # =============================================================================
@@ -49,7 +49,7 @@ def motionDetect(frameQueue) :
         frame = frameQueue.get() # <===============================================================
         text = "Unoccupied"
         # Resize and save a greyscale version of the image
-        frame = imutils.resize(frame, width=750)
+        frame = imutils.resize(frame, width=320)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # Blur it to remove camera noise (reducing false positives)
@@ -96,8 +96,6 @@ def motionDetect(frameQueue) :
         # The moment something moves momentarily, reset the persistent
         # movement timer.
         if time.time() - start_time > 5:
-            # print('\n\n\n한블락지남\n\n\n')
-
             if transient_movement_flag == True:
                 block_movement_flag = True
             if  len(dq) == 3:
@@ -108,28 +106,23 @@ def motionDetect(frameQueue) :
             next_block_flag = True
 
         if sum(dq) == 3:
-            # print("\n\n\n자주 움직임\n\n\n")
             text = "Frequently Movement Detected"
             if not messageCheck :
                 messageCheck = True
-                sendMessage('Frequently Moving Detected', 'Moving Moving Moving')
+                sendMessage('Frequently Moving Detected', 'Baby is moving now.')
         else:
             messageCheck = False
             text = "No Movement Detected"
         cv2.putText(frame, str(text), (10, 35), font, 0.75, (255, 255, 255), 2, cv2.LINE_AA)
 
-        # For if you want to show the individual video frames
-        #    cv2.imshow("frame", frame)
-        #    cv2.imshow("delta", frame_delta)
-
         # Convert the frame_delta to color for splicing
         frame_delta = cv2.cvtColor(frame_delta, cv2.COLOR_GRAY2BGR)
 
         # ======================================TEST SHOW======================================
-        # # Splice the two video frames together to make one long horizontal one
-        # cv2.imshow("frame", np.hstack((frame_delta, frame)))
+        # Splice the two video frames together to make one long horizontal one
+        cv2.imshow("frame", np.hstack((frame_delta, frame)))
 
-        # # Interrupt trigger by pressing q to quit the open CV program
-        # ch = cv2.waitKey(1)
-        # if ch & 0xFF == ord('q'):
-        #     break
+        # Interrupt trigger by pressing q to quit the open CV program
+        ch = cv2.waitKey(1)
+        if ch & 0xFF == ord('q'):
+            break

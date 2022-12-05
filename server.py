@@ -14,7 +14,7 @@ import numpy as np
 
 # AI models
 from models.BlinkDetect import blinkDetect
-from models.posenet import poseDetect
+# from models.posenet import poseDetect # <=================================Jetson Environment======================================
 from threading import Thread
 
 # ====================전역 변수 선언====================
@@ -28,15 +28,6 @@ Q = queue.Queue(maxsize=128)
 cameraOn = False
 videoFrame = None # <========== global video frame
 
-blinkStartTime = None
-poseFaceCoverStartTime = None
-poseBlanketRemoveStartTime = None
-# ===================Blink Variable ===================
-COUNTER = 0
-TOTAL = 0
-detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
-# =====================================================
 poseEstimationChecked = False
 frequentlyMoveChecked = False
 blinkDetectionChecked = False
@@ -71,21 +62,12 @@ def settingPost() :
     global poseEstimationChecked
     global frequentlyMoveChecked
     global blinkDetectionChecked
-    global poseFaceCoverStartTime
-    global poseBlanketRemoveStartTime
-    global blinkStartTime
     
     if request.method == 'POST' :
         poseEstimationChecked = str(request.form.get('PoseEstimation')) == 'on'
         frequentlyMoveChecked = str(request.form.get('FrequentlyMove')) == 'on'
         blinkDetectionChecked = str(request.form.get('BlinkDetection')) == 'on'
         print('MODE : ', poseEstimationChecked, frequentlyMoveChecked, blinkDetectionChecked)
-    
-    if poseEstimationChecked :
-        poseFaceCoverStartTime = time()
-        poseBlanketRemoveStartTime = time()
-    if blinkDetectionChecked :
-        blinkStartTime = time()
 
     return render_template('index.html', 
                             FaceCoverBlanketRemoveState='ON' if poseEstimationChecked else 'OFF', 
@@ -119,6 +101,10 @@ def stream() :
         )
     except Exception as e :
         print('[Honey]', 'stream error : ', str(e))
+
+# ===========================================================================================================================
+# ====================================================== Function Area ======================================================
+# ===========================================================================================================================
 
 # 웹페이지에 바이트 코드를 이미지로 출력하는 함수
 def stream_gen() :
@@ -174,9 +160,6 @@ def stopCam() :
 # 영상 데이터를 실시간으로 Queue에 update하는 Thread 내용, 전역변수 cameraOn이 False면
 # 빈 while문 진행
 def updateVideoFrame() :
-    global COUNTER
-    global TOTAL
-
     while True :
         if cameraOn :
             (ret, frame) = capture.read()
@@ -188,12 +171,10 @@ def updateVideoFrame() :
                 
                 if blinkDetectionChecked and cameraOn :
                     blinkDetect(frame)
-                else :
-                    COUNTER = 0
-                    TOTAL = 0
                 
                 if poseEstimationChecked and cameraOn :
-                    poseDetect(frame)
+                    pass
+                    # poseDetect(frame) # <=================================Jetson Environment======================================
 
 # 영상 데이터를 실시간으로 Queue에서 read하는 Thread 내용, 전역변수 cameraOn이 False면
 # 빈 while문 진행
