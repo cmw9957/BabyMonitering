@@ -4,9 +4,9 @@ from multiprocessing import Process
 
 # poseDetect rendering
 import sys
-# from jetson_utils import videoOutput # <=================================Jetson Environment======================================
+from jetson_utils import videoOutput # <=================================Jetson Environment======================================
 
-# ouput = videoOutput("", argv=sys.argv) # <=================================Jetson Environment======================================
+ouput = videoOutput("", argv=sys.argv) # <=================================Jetson Environment======================================
 
 if __name__ == '__main__':
     print('CV on')
