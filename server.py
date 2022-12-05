@@ -173,16 +173,16 @@ def updateVideoFrame() :
             if ret :
                 Q.put(frame)
 
-                if streamQueueChecked and cameraOn :
+                if streamQueueChecked :
                     streamQueue.put(frame)
 
-                if frequentlyMoveChecked and cameraOn :
+                if frequentlyMoveChecked :
                     motionFrameQueue.put(frame)
                 
-                if blinkDetectionChecked and cameraOn :
+                if blinkDetectionChecked :
                     blinkDetect(frame)
                 
-                if poseEstimationChecked and cameraOn :
+                if poseEstimationChecked :
                     pass
                     # poseDetect(frame) # <=================================Jetson Environment======================================
 
