@@ -24,9 +24,10 @@ updateThread = None
 readThread = None
 width = 320
 height = 240
-Q = queue.Queue(maxsize=128)
 cameraOn = False
-videoFrame = None # <========== global video frame
+streamQueueChecked = False
+streamQueue = queue.Queue(maxsize=128)
+Q = queue.Queue(maxsize=128)
 
 poseEstimationChecked = False
 frequentlyMoveChecked = False
@@ -37,7 +38,16 @@ motionFrameQueue = Queue(maxsize=128)
 # main page
 @app.route('/')
 def index():
-    # print('Camera status : ', cameraOn)
+    global streamQueueChecked
+    global streamQueue
+
+    # Empty the streamQueue if streamQueueChecked is True
+    if streamQueueChecked :
+        print('Stream Queue is Cleared')
+        streamQueueChecked = False
+        with streamQueue.mutex :
+            streamQueue.queue.clear()
+    
     return render_template('index.html', 
                             FaceCoverBlanketRemoveState='ON' if poseEstimationChecked else 'OFF', 
                             FrequentlyMoveState='ON' if frequentlyMoveChecked else 'OFF', 
@@ -46,6 +56,9 @@ def index():
 # streaming page
 @app.route('/stream_page')
 def stream_page():
+    global streamQueueChecked
+
+    streamQueueChecked = True
     return render_template('stream.html', 
                             FaceCoverBlanketRemoveState='ON' if poseEstimationChecked else 'OFF', 
                             FrequentlyMoveState='ON' if frequentlyMoveChecked else 'OFF', 
@@ -60,7 +73,7 @@ def stream() :
                             mimetype='multipart/x-mixed-replace; boundary=frame'
         )
     except Exception as e :
-        print('[Honey]', 'stream error : ', str(e))
+        print('[Badger]', 'stream error : ', str(e))
 
 # setting page
 @app.route('/setting')
@@ -108,15 +121,10 @@ def camerapost() :
 
 # 웹페이지에 바이트 코드를 이미지로 출력하는 함수
 def stream_gen() :
-    try :
-        while True :
-            frame = bytescode()
-            
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-    except GeneratorExit :
-        print('Back to the main page')
-        pass
+    while True :
+        frame = bytescode()
+        yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 # 카메라 시작 함수
 def runCam(src=0) :
@@ -147,13 +155,11 @@ def runCam(src=0) :
 
 # 카메라 중지 함수
 def stopCam() :
-    global videoFrame
     global cameraOn
 
     cameraOn = False
 
     if capture is not None :
-        videoFrame = None
         capture.release()
         clearVideoFrame()
 
@@ -166,6 +172,10 @@ def updateVideoFrame() :
 
             if ret :
                 Q.put(frame)
+
+                if streamQueueChecked and cameraOn :
+                    streamQueue.put(frame)
+
                 if frequentlyMoveChecked and cameraOn :
                     motionFrameQueue.put(frame)
                 
@@ -179,11 +189,9 @@ def updateVideoFrame() :
 # 영상 데이터를 실시간으로 Queue에서 read하는 Thread 내용, 전역변수 cameraOn이 False면
 # 빈 while문 진행
 def readVideoFrame() :
-    global videoFrame
-
     while True :
         if cameraOn :
-            videoFrame = Q.get()
+            Q.get()
 
 # Queue에 있는 영상 데이터를 삭제하는 함수
 def clearVideoFrame() :
@@ -196,8 +204,15 @@ def blankVideo() :
 
 # 이미지 데이터를 바이트 코드로 변환하는 함수
 def bytescode() :
-    if capture is None or videoFrame is None or not capture.isOpened():
+    frame = streamReadFrame()
+    if capture is None or frame is None or not capture.isOpened():
         frame = blankVideo()
     else :
-        frame = imutils.resize(videoFrame, width=int(width))
+        frame = imutils.resize(frame, width=int(width))
     return cv2.imencode('.jpg', frame)[1].tobytes()
+
+def streamReadFrame() :
+    if cameraOn :
+        return streamQueue.get()
+    else :
+        return None
